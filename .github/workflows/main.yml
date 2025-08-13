@@ -1,0 +1,20 @@
+name: Commenting on PR workflow
+
+on:
+   pull_request:
+      - closed
+
+   jobs:
+      commenting-on-pr:
+         name: Commenting on PR
+         runs-on: ubuntu-latest
+     
+     steps:
+         - name: Open new PR by github actions
+           if: github.event.pull_request.merged == false
+          
+           run: gh pr comment ${{ PR_NUMBER }} --body "We will not merging your PR, please update your code to satisfy our requerments and open new PR"
+          
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            PR_NUMBER: ${{ github.event.pull_request.number }}
