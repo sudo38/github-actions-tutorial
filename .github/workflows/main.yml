@@ -4,12 +4,22 @@ on:
   pull_request:
     types: [closed]
 
+permissions:
+   pull-requests: write
+   issues: write
+
 jobs:
   commenting-on-pr:
     name: Commenting on PR
     runs-on: ubuntu-latest
     steps:
-      - name: Open new PR by github actions
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate GitHub CLI
+        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Open new PR by Github Actions
         if: github.event.pull_request.merged == false
         run: gh pr comment ${{ github.event.pull_request.number }} --body "We will not be merging your PR, please update your code to satisfy our requirements and open a new PR"
         env:
